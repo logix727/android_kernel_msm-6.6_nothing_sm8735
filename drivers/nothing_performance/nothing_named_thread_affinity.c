@@ -92,33 +92,32 @@ void init_target_info_value(void);
 void reset_target_info_and_work(void);
 
 DEFINE_SPINLOCK(target_info_spinlock);
-void inline lock_target_info(void)
+static inline void lock_target_info(unsigned long *flags)
 {
-	unsigned long flags = 0;
-	spin_lock_irqsave(&target_info_spinlock, flags);
+	spin_lock_irqsave(&target_info_spinlock, *flags);
 }
 
-void inline unlock_target_info(void)
+static inline void unlock_target_info(unsigned long flags)
 {
-	unsigned long flags = 0;
 	spin_unlock_irqrestore(&target_info_spinlock, flags);
 }
 
 int get_target_info(pid_t *pid, named_thread_affinity_policy *list)
 {
 	int ret = 0;
+	unsigned long flags;
 
 	if (!pid || !list) {
 		ret = -EINVAL;
 		goto out;
 	}
 
-	lock_target_info();
+	lock_target_info(&flags);
 
 	*pid = target_pid;
 	memcpy(list, target_policy_list, sizeof(target_policy_list));
 
-	unlock_target_info();
+	unlock_target_info(flags);
 
 out:
 	return ret;
@@ -355,6 +354,7 @@ int set_target_process_named_thread_affinity(char *thread_name, cpumask_t *cpuma
 	int ret = 0;
 	struct task_struct *p, *t;
 	pid_t pid;
+	unsigned long flags;
 
 	if (!thread_name || !cpumask) {
 		ret = -EINVAL;
@@ -366,9 +366,9 @@ int set_target_process_named_thread_affinity(char *thread_name, cpumask_t *cpuma
 		goto out;
 	}
 
-	lock_target_info();
+	lock_target_info(&flags);
 	pid = target_pid;
-	unlock_target_info();
+	unlock_target_info(flags);
 
 	rcu_read_lock();
 	p = find_task_by_vpid(pid);
@@ -495,12 +495,13 @@ int add_target_named_thread_affinity_policy(char *thread_name, cpumask_t *cpumas
 {
 	int ret = -1;
 	int i;
+	unsigned long flags;
 
 	if (!thread_name || !cpumask) {
 		goto out;
 	}
 
-	lock_target_info();
+	lock_target_info(&flags);
 	/* Replace same name and is in use */
 	for (i = 0; i < MAX_POLICY_COUNT; i++)  {
 		if (strncmp(thread_name, target_policy_list[i].thread_name, MAX_THREAD_NAME_SIZE)) {
@@ -545,7 +546,7 @@ fail:
 	ret = -EBUSY;
 
 done:
-	unlock_target_info();
+	unlock_target_info(flags);
 
 out:
 	return ret;
@@ -731,6 +732,7 @@ static ssize_t target_pid_proc_write(struct file *file, const char __user *ubuf,
 	pid_t pid;
 	struct task_struct *p;
 	char buf[PID_BUF_SIZE];
+	unsigned long flags;
 
 	if (!count || count > PID_BUF_SIZE - 1) {
 		ret = -EINVAL;
@@ -767,9 +769,9 @@ static ssize_t target_pid_proc_write(struct file *file, const char __user *ubuf,
 	reset_target_info_and_work();
 
 	/* Set new target pid */
-	lock_target_info();
+	lock_target_info(&flags);
 	target_pid = pid;
-	unlock_target_info();
+	unlock_target_info(flags);
 	pr_info("Set target pid: %d", target_pid);
 
 
@@ -1005,23 +1007,26 @@ void inline init_target_policy_list(void)
 {
 	int i;
 	cpumask_t all_mask = CPU_MASK_ALL;
+	unsigned long flags;
 
 	atomic_set(&target_policy_count, 0);
 
-	lock_target_info();
+	lock_target_info(&flags);
 	for (i = 0; i < MAX_POLICY_COUNT; i++) {
 		target_policy_list[i].policy_in_use = false;
 		memset(target_policy_list[i].thread_name, 0, MAX_THREAD_NAME_SIZE);
 		cpumask_copy(&target_policy_list[i].cpumask, &all_mask);
 	}
-	unlock_target_info();
+	unlock_target_info(flags);
 }
 
 void inline init_target_pid(void)
 {
-	lock_target_info();
+	unsigned long flags;
+
+	lock_target_info(&flags);
 	target_pid = 0;
-	unlock_target_info();
+	unlock_target_info(flags);
 }
 
 /* init pid and policy list */

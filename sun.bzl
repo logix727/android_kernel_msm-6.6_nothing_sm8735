@@ -2,7 +2,6 @@ load(":target_variants.bzl", "la_variants")
 load(":msm_kernel_la.bzl", "define_msm_la")
 load(":msm_kernel_16k_la.bzl", "define_msm_16k_la")
 load(":image_opts.bzl", "boot_image_opts")
-load("@nt_project//:dict.bzl", "TARGET_PRODUCT")
 
 target_name = "sun"
 
@@ -337,11 +336,10 @@ def define_sun():
         "mm/zsmalloc.ko",
     ]
 
-    if TARGET_PRODUCT == "Metroid":
-        _sun_in_tree_modules += [
-            "drivers/misc/rpmb_state.ko",
-            "drivers/nothing_stability/nothing_rdump.ko",
-        ]
+    _sun_in_tree_modules += [
+        "drivers/misc/rpmb_state.ko",
+        "drivers/nothing_stability/nothing_rdump.ko",
+    ]
 
     _sun_consolidate_in_tree_modules = _sun_in_tree_modules + [
         # keep sorted
