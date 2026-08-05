@@ -56,3 +56,9 @@ config NOTHING_SECURE_ELEMENT
 	default n
 	help
 		This driver getting secure info from hw which setting up in early stage.
+
+config NOTHING_RDUMP
+	tristate "Nothing ramdump"
+	default n
+	help
+		Map the ramdump LBA address to IMEM.

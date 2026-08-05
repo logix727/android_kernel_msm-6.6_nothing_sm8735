@@ -1064,6 +1064,12 @@ config NT_DISPLAY_NOTIFIER
 	  This driver is responsible for notifying clients, such as fingerprint,
 	  interested in display hbm&ui status to decide capture image or not.
 
+config QCOM_SPMI_PMIC_ERR_DBG
+	tristate "Qualcomm SPMI protocol error IRQ handler"
+	depends on QCOM_SCM
+	help
+	  Enabling this option adds the SPMI PMIC error debug driver.
+
 config QTI_PMIC_GLINK
 	tristate "Enable support for PMIC GLINK"
 	depends on RPMSG

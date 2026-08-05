@@ -611,6 +611,12 @@ config NOTH_SECURE_STATE
 		Say Y here to support NOTHING device secure state driver
 		If unsure, say N
 
+config NOTH_RPMB_STATE
+	tristate "Nothing RPMB state driver support"
+	help
+		Say Y here to support Nothing device RPMB state reporting
+		If unsure, say N
+
 config OIS_REGULATOR_DEBUG
 	tristate "ois regulator debug driver support"
 	help

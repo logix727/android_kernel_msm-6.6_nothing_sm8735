@@ -202,3 +202,4 @@ obj-$(CONFIG_S390)		+= s390/
 
 obj-y				+= nothing_stability/
 obj-y				+= nothing_thermal/
+obj-y				+= nothing_performance/

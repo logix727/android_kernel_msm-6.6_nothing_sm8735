@@ -9,3 +9,4 @@ obj-$(CONFIG_NOTHING_TASK_INFO)         += nothing_task_info.o
 obj-$(CONFIG_NOTHING_RESTART_HANDLER)   += nothing_restart_handler.o
 obj-$(CONFIG_NOTHING_ERROR_REPORT)      += nothing_error_report.o
 obj-$(CONFIG_NOTHING_TASK_MEMINFO)      += nothing_task_io.o
+obj-$(CONFIG_NOTHING_RDUMP)             += nothing_rdump.o

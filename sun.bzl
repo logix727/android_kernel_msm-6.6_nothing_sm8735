@@ -2,6 +2,7 @@ load(":target_variants.bzl", "la_variants")
 load(":msm_kernel_la.bzl", "define_msm_la")
 load(":msm_kernel_16k_la.bzl", "define_msm_16k_la")
 load(":image_opts.bzl", "boot_image_opts")
+load("@nt_project//:dict.bzl", "TARGET_PRODUCT")
 
 target_name = "sun"
 
@@ -245,6 +246,7 @@ def define_sun():
         "drivers/soc/qcom/smp2p.ko",
         "drivers/soc/qcom/smp2p_sleepstate.ko",
         "drivers/soc/qcom/socinfo.ko",
+        "drivers/soc/qcom/spmi-pmic-err-debug.ko",
         "drivers/soc/qcom/sps/sps_drv.ko",
         "drivers/soc/qcom/sys_pm_vx.ko",
         "drivers/soc/qcom/sysmon_subsystem_stats.ko",
@@ -329,10 +331,17 @@ def define_sun():
         "drivers/nothing_stability/nothing_writeback_kmsg.ko",
         "drivers/nothing_stability/nothing_check_parts.ko",
         "drivers/nothing_stability/nothing_task_io.ko",
+        "drivers/nothing_performance/nothing_performance.ko",
         "fs/ntfs3/ntfs3.ko",
         "drivers/block/zram/zram.ko",
         "mm/zsmalloc.ko",
     ]
+
+    if TARGET_PRODUCT == "Metroid":
+        _sun_in_tree_modules += [
+            "drivers/misc/rpmb_state.ko",
+            "drivers/nothing_stability/nothing_rdump.ko",
+        ]
 
     _sun_consolidate_in_tree_modules = _sun_in_tree_modules + [
         # keep sorted

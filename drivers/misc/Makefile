@@ -75,4 +75,5 @@ obj-$(CONFIG_NOTH_CABLE_DETECT)	+= cable_detect.o
 obj-$(CONFIG_NOTH_HARDWARE_ID)  += hardware_id.o
 obj-$(CONFIG_NOTH_SLOT_CHECK)	+= slot_check.o
 obj-$(CONFIG_NOTH_SECURE_STATE)  += secure_state.o
+obj-$(CONFIG_NOTH_RPMB_STATE)  += rpmb_state.o
 obj-$(CONFIG_OIS_REGULATOR_DEBUG)  += ois_regulator.o
